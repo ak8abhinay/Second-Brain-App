@@ -3,13 +3,13 @@ Second Brain: Backend Engine
 Goal:
 The primary objective of this project was building a "type-first" backend where the database models (MongoDB) and the API responses are strictly typed to prevent runtime errors and ensure data integrity.
 
-Tech Stac
-Runtime: Node.js
-Language: TypeScript 
-Framework: Express.js
-Database: MongoDB with Mongoose 
-Authentication: JWT / Bcrypt for password hashing
-Validation: Zod
+Tech Stack:
+- Runtime: Node.js
+- Language: TypeScript 
+- Framework: Express.js
+- Database: MongoDB with Mongoose 
+- Authentication: JWT / Bcrypt for password hashing
+- Validation: Zod
 
 Features
 Utilized TypeScript interfaces alongside Mongoose schemas to ensure end-to-end type safety from the database to the API response.
