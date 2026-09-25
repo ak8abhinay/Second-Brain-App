@@ -1,6 +1,7 @@
 import mongoose, { model, Schema } from "mongoose";
+import { MONGO_URL } from "./config";
 
-mongoose.connect("mongodb+srv://admin:nosqlmongodbadmin@cluster0.do2tvha.mongodb.net/Second-Brain-App")
+mongoose.connect(MONGO_URL)
 
 const UserSchema = new Schema({
   username: {type: String, unique: true},
