@@ -1,12 +1,23 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { UserModel } from "../models/user.model";
 import { JWT_PASSWORD } from "../config";
+import { signupSchema, signinSchema } from "../validators/auth.validator";
+
+const isProduction = process.env.NODE_ENV === "production";
 
 export const signup = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const parsed = signupSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ message: parsed.error.issues[0].message });
+    return;
+  }
+  const { username, password } = parsed.data;
+
   try {
-    await UserModel.create({ username, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await UserModel.create({ username, password: hashedPassword });
     res.json({ message: "User signed up" });
   } catch (e) {
     res.status(411).json({ message: "User already exists" });
@@ -14,13 +25,36 @@ export const signup = async (req: Request, res: Response) => {
 };
 
 export const signin = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const existingUser = await UserModel.findOne({ username, password });
-
-  if (existingUser) {
-    const token = jwt.sign({ id: existingUser._id }, JWT_PASSWORD);
-    res.json({ token });
-  } else {
-    res.status(403).json({ message: "Incorrect credentials" });
+  const parsed = signinSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ message: parsed.error.issues[0].message });
+    return;
   }
+  const { username, password } = parsed.data;
+
+  const existingUser = await UserModel.findOne({ username });
+  if (!existingUser) {
+    res.status(403).json({ message: "Incorrect credentials" });
+    return;
+  }
+
+  const passwordMatches = await bcrypt.compare(password, existingUser.password);
+  if (!passwordMatches) {
+    res.status(403).json({ message: "Incorrect credentials" });
+    return;
+  }
+
+  const token = jwt.sign({ id: existingUser._id }, JWT_PASSWORD);
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "lax"
+  });
+  res.json({ message: "Signed in" });
+};
+
+export const logout = (req: Request, res: Response) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out" });
 };
