@@ -10,7 +10,7 @@ const isProduction = process.env.NODE_ENV === "production";
 export const signup = async (req: Request, res: Response) => {
   const parsed = signupSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ message: parsed.error.issues[0].message });
+    res.status(400).json({ message: parsed.error.issues[0]?.message ?? "Invalid input" });
     return;
   }
   const { username, password } = parsed.data;
@@ -27,7 +27,7 @@ export const signup = async (req: Request, res: Response) => {
 export const signin = async (req: Request, res: Response) => {
   const parsed = signinSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ message: parsed.error.issues[0].message });
+    res.status(400).json({ message: parsed.error.issues[0]?.message ?? "Invalid input" });
     return;
   }
   const { username, password } = parsed.data;
@@ -38,7 +38,7 @@ export const signin = async (req: Request, res: Response) => {
     return;
   }
 
-  const passwordMatches = await bcrypt.compare(password, existingUser.password);
+  const passwordMatches = await bcrypt.compare(password, existingUser.password!);
   if (!passwordMatches) {
     res.status(403).json({ message: "Incorrect credentials" });
     return;
