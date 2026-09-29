@@ -33,7 +33,7 @@ export const getSharedBrain = async (req: Request, res: Response) => {
     return;
   }
 
-  const content = await ContentModel.find({ userId: link.userId });
+  const content = await ContentModel.find({ userId: link.userId }).select("-rawText");
   const user = await UserModel.findOne({ _id: link.userId });
 
   if (!user) {
