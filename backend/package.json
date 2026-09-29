@@ -20,14 +20,19 @@
     "cors": "^2.8.5",
     "dotenv": "^18.0.4",
     "express": "^5.1.0",
+    "js-tiktoken": "^1.0.21",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.0",
+    "multer": "^2.4.0",
+    "pdf-parse": "^1.1.1",
     "typescript": "^5.9.3",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
-    "@types/node": "^26.6.2"
+    "@types/multer": "^2.2.0",
+    "@types/node": "^26.6.2",
+    "@types/pdf-parse": "^1.1.5"
   }
 }
